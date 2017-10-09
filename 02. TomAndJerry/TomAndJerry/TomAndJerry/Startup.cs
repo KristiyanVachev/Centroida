@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace TomAndJerry
 {
@@ -26,42 +25,43 @@ namespace TomAndJerry
                 {'T', 'F', ' ', ' '}
             };
 
-            var paths = GatherPaths(0, 3, floor);
+            var paths = GatherPaths(3, 0, floor);
 
+            //Print
             foreach (var path in paths)
             {
-                for (int index = 0; index < path.Count; index++)
+                for (int index = 0; index < path.Commands.Count; index++)
                 {
-                    Console.Write(index);
+                    Console.Write(path.Commands[index].Direction);
                 }
                 Console.WriteLine();
             }
 
         }
 
-        public static List<List<char>> GatherPaths(int tomRow, int tomCol, char[,] floor)
+        public static IList<Path> GatherPaths(int tomRow, int tomCol, char[,] floor)
         {
             //save all paths somewhere
-            var foundPaths = new List<List<char>>();
-            var currentPath = new List<char>();
+            var foundPaths = new List<Path>();
+            var currentPath = new Path();
 
             Path(tomRow, tomCol, 'F', floor, foundPaths, currentPath);
+            Path(tomRow, tomCol, 'B', floor, foundPaths, currentPath);
+            Path(tomRow, tomCol, 'L', floor, foundPaths, currentPath);
+            Path(tomRow, tomCol, 'R', floor, foundPaths, currentPath);
             //explore each direction
 
             return foundPaths;
         }
 
-        public static void Path(int row, int col, char dir, char[,] floor, List<List<char>> foundPaths, List<char> currentPath)
+        public static void Path(int row, int col, char dir, char[,] floor, IList<Path> foundPaths, Path currentPath)
         {
             //Check if dir is walkable
+            //TODO check with new coordinates
             if (!PathIsValid(row, col, dir, floor))
             {
                 return;
             }
-
-            //copy currentPath and add new direction
-            var newPath = currentPath.ToList();
-            newPath.Add(dir);
 
             //Get new coordinates
             switch (dir)
@@ -80,15 +80,22 @@ namespace TomAndJerry
                     break;
             }
 
+            if (currentPath.Walked(row, col))
+            {
+                return;
+            }
+
+            //copy currentPath and add new direction
+            var newPath = currentPath.Copy();
+            newPath.Add(row, col, dir, floor[row, col]);
+
             //if Jerry add to directions and stop
             if (floor[row, col] == 'J')
             {
                 foundPaths.Add(newPath);
+                return;
             }
-
-            //mark as walked with X
-            floor[row, col] = 'X';
-
+            
             //explore others
             Path(row, col, 'F', floor, foundPaths, newPath);
             Path(row, col, 'B', floor, foundPaths, newPath);
