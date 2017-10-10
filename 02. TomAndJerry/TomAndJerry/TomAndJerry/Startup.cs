@@ -49,20 +49,12 @@ namespace TomAndJerry
             Path(tomRow, tomCol, 'B', floor, foundPaths, currentPath);
             Path(tomRow, tomCol, 'L', floor, foundPaths, currentPath);
             Path(tomRow, tomCol, 'R', floor, foundPaths, currentPath);
-            //explore each direction
-
+    
             return foundPaths;
         }
 
         public static void Path(int row, int col, char dir, char[,] floor, IList<Path> foundPaths, Path currentPath)
         {
-            //Check if dir is walkable
-            //TODO check with new coordinates
-            if (!PathIsValid(row, col, dir, floor))
-            {
-                return;
-            }
-
             //Get new coordinates
             switch (dir)
             {
@@ -80,12 +72,12 @@ namespace TomAndJerry
                     break;
             }
 
-            if (currentPath.Walked(row, col))
+            if (!PathIsValid(row, col, floor, currentPath))
             {
                 return;
             }
 
-            //copy currentPath and add new direction
+            //Create a copy of the path until now (each of 4 directions creates a new path)
             var newPath = currentPath.Copy();
             newPath.Add(row, col, dir, floor[row, col]);
 
@@ -95,49 +87,32 @@ namespace TomAndJerry
                 foundPaths.Add(newPath);
                 return;
             }
-            
-            //explore others
+
+            //Explore
             Path(row, col, 'F', floor, foundPaths, newPath);
             Path(row, col, 'B', floor, foundPaths, newPath);
             Path(row, col, 'L', floor, foundPaths, newPath);
             Path(row, col, 'R', floor, foundPaths, newPath);
         }
 
-        public static bool PathIsValid(int row, int col, char dir, char[,] floor)
+        public static bool PathIsValid(int row, int col, char[,] floor, Path currentPath)
         {
-            switch (dir)
+            //Out of matrix
+            if (row < 0 || row > floor.GetLength(0) - 1 || col < 0 || col > floor.GetLength(1) - 1)
             {
-                case 'F':
-                    if (row <= 0 || floor[row - 1, col] == 'F' || floor[row - 1, col] == 'X')
-                    {
-                        return false;
-                    }
+                return false;
+            }
 
-                    break;
+            //Furniture
+            if (floor[row, col] == 'F')
+            {
+                return false;
+            }
 
-                case 'B':
-                    if (row >= floor.GetLength(0) - 1 || floor[row + 1, col] == 'F' || floor[row + 1, col] == 'X')
-                    {
-                        return false;
-                    }
-                    break;
-
-                case 'L':
-                    if (col <= 0 || floor[row, col - 1] == 'F' || floor[row, col - 1] == 'X')
-                    {
-                        return false;
-                    }
-                    break;
-
-                case 'R':
-                    if (col >= floor.GetLength(1) - 1 || floor[row, col + 1] == 'F' || floor[row, col + 1] == 'X')
-                    {
-                        return false;
-                    }
-                    break;
-
-                default:
-                    return false;
+            //Already walked trough
+            if (currentPath.Walked(row, col))
+            {
+                return false;
             }
 
             return true;
