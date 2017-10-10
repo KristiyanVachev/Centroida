@@ -46,6 +46,7 @@ namespace TomAndJerry
             if (type == 'P')
             {
                 this.Paint++;
+                //TODO add isPaint to command
             }
         }
 

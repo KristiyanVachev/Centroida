@@ -47,6 +47,9 @@
     <Compile Include="Path.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TomController.cs" />
+    <Compile Include="Tree\Node.cs" />
+    <Compile Include="Tree\Tree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -48,6 +48,8 @@ namespace TomAndJerry
             Path(tomRow, tomCol, 'B', floor, tomController, currentPath);
             Path(tomRow, tomCol, 'L', floor, tomController, currentPath);
             Path(tomRow, tomCol, 'R', floor, tomController, currentPath);
+
+            tomController.ConstructTree();
     
             return tomController;
         }
