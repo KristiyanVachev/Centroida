@@ -26,6 +26,7 @@ namespace AVLTree
                     if (newNode.Value < currNode.Value)
                     {
                         currNode = currNode.Left;
+
                         if (currNode == null)
                         {
                             prevNode.Left = newNode;
@@ -35,6 +36,7 @@ namespace AVLTree
                     else
                     {
                         currNode = currNode.Right;
+
                         if (currNode == null)
                         {
                             prevNode.Right = newNode;
@@ -44,79 +46,55 @@ namespace AVLTree
                 }
             }
 
-            //if (newNode.Value == 8)
-            //{
-            //    NeedsBalance(newNode);
-            //}
+            if (newNode.Value == 8)
+            {
+                NeedsBalance(newNode);
+            }
         }
 
         private bool NeedsBalance(Node node)
         {
-            //Node grandGrandParent = null;
-            //Node grandparent = null;
-            //Node parent = null;
-            //Node child = this.Root;
-
-            //while (child != node)
-            //{
-            //    grandGrandParent = grandparent;
-            //    grandparent = parent;
-            //    parent = child;
-
-            //    if (node.Value < child.Value)
-            //    {
-            //        child = child.Left;
-            //    }
-            //    else
-            //    {
-            //        child = child.Right;
-            //    }
-
-            //}
-
             if (node.Parent == null || node.Parent.Parent == null)
             {
                 return false;
             }
 
-            if (node.Parent.Left == null || node.Parent.Right == null && node.Parent.Parent.Left == null || node.Parent.Parent.Right == null)
+            if ((node.Parent.Left == null || node.Parent.Right == null) && (node.Parent.Parent.Left == null || node.Parent.Parent.Right == null))
             {
-                this.Rotate(node);
+                this.Balance(node);
                 return true;
             }
 
             return false;
         }
 
-        private void Rotate(Node node)
+        private void Balance(Node node)
         {
             if (node.Parent.Left == null && node.Parent.Parent.Left == null)
             {
                 LeftRotation(node);
             }
+
+
         }
 
         private void LeftRotation(Node node)
         {
-            var grandGrandParent = node.Parent.Parent.Parent;
+            var middle = node.Parent;
+            var top = node.Parent.Parent;
 
-            if (grandGrandParent == null)
+            if (top.Parent != null)
             {
-                this.Root = node.Parent;
-                this.Root.Parent = null;
-
-                //this.Root.Left = node.Parent.Parent;
-                //node.Parent.Parent.Parent = this.Root;
+                top.Parent.Right = middle;
             }
             else
             {
-                var newSibling = grandGrandParent.Right;
-                grandGrandParent.Right = node.Parent;
-
-                node.Parent.Left = newSibling;
-                //newSibling.Parent = 
+                this.Root = middle;
             }
 
+            middle.Left = top;
+            middle.Parent = top.Parent;
+            top.Parent = middle;
         }
     }
 }
