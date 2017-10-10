@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace TomAndJerry
 {
@@ -25,10 +24,10 @@ namespace TomAndJerry
                 {'T', 'F', ' ', ' '}
             };
 
-            var paths = GatherPaths(3, 0, floor);
+            var tomController = GatherPaths(3, 0, floor);
 
             //Print
-            foreach (var path in paths)
+            foreach (var path in tomController.Paths)
             {
                 for (int index = 0; index < path.Commands.Count; index++)
                 {
@@ -39,21 +38,21 @@ namespace TomAndJerry
 
         }
 
-        public static IList<Path> GatherPaths(int tomRow, int tomCol, char[,] floor)
+        public static TomController GatherPaths(int tomRow, int tomCol, char[,] floor)
         {
             //save all paths somewhere
-            var foundPaths = new List<Path>();
+            var tomController = new TomController();
             var currentPath = new Path();
 
-            Path(tomRow, tomCol, 'F', floor, foundPaths, currentPath);
-            Path(tomRow, tomCol, 'B', floor, foundPaths, currentPath);
-            Path(tomRow, tomCol, 'L', floor, foundPaths, currentPath);
-            Path(tomRow, tomCol, 'R', floor, foundPaths, currentPath);
+            Path(tomRow, tomCol, 'F', floor, tomController, currentPath);
+            Path(tomRow, tomCol, 'B', floor, tomController, currentPath);
+            Path(tomRow, tomCol, 'L', floor, tomController, currentPath);
+            Path(tomRow, tomCol, 'R', floor, tomController, currentPath);
     
-            return foundPaths;
+            return tomController;
         }
 
-        public static void Path(int row, int col, char dir, char[,] floor, IList<Path> foundPaths, Path currentPath)
+        public static void Path(int row, int col, char dir, char[,] floor, TomController tomController, Path currentPath)
         {
             //Get new coordinates
             switch (dir)
@@ -84,15 +83,21 @@ namespace TomAndJerry
             //if Jerry add to directions and stop
             if (floor[row, col] == 'J')
             {
-                foundPaths.Add(newPath);
+                tomController.Add(newPath);
+                return;
+            }
+
+            //Optimization trick - If the current path becomes longer than the shortest path already found, stop looking into it
+            if (newPath.Lenght >= tomController.ShortestLenght)
+            {
                 return;
             }
 
             //Explore
-            Path(row, col, 'F', floor, foundPaths, newPath);
-            Path(row, col, 'B', floor, foundPaths, newPath);
-            Path(row, col, 'L', floor, foundPaths, newPath);
-            Path(row, col, 'R', floor, foundPaths, newPath);
+            Path(row, col, 'F', floor, tomController, newPath);
+            Path(row, col, 'B', floor, tomController, newPath);
+            Path(row, col, 'L', floor, tomController, newPath);
+            Path(row, col, 'R', floor, tomController, newPath);
         }
 
         public static bool PathIsValid(int row, int col, char[,] floor, Path currentPath)
