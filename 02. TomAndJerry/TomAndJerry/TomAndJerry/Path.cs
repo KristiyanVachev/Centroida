@@ -36,18 +36,18 @@ namespace TomAndJerry
         {
             var newCommand = new Command(row, col, direction);
 
+            if (type == 'P')
+            {
+                this.Paint++;
+                newCommand.IsPaint = true;
+            }
+
             if (this.Lenght > 0 && direction != this.Commands.Last().Direction)
             {
                 this.Turns++;
             }
 
             this.Commands.Add(newCommand);
-
-            if (type == 'P')
-            {
-                this.Paint++;
-                //TODO add isPaint to command
-            }
         }
 
         public bool Walked(int row, int col)

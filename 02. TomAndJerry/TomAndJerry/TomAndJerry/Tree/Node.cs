@@ -4,13 +4,16 @@ namespace TomAndJerry.Tree
 {
     public class Node
     {
-        public Node(char value)
+        public Node(char direction, bool isPaint)
         {
-            this.Value = value;
+            this.Direction = direction;
+            this.IsPaint = isPaint;
             this.Children = new List<Node>();
         }
 
-        public char Value { get; set; }
+        public char Direction { get; set; }
+
+        public bool IsPaint { get; set; }
 
         public IList<Node> Children { get; set; }
     }

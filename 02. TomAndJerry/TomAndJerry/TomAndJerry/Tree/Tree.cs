@@ -6,7 +6,7 @@ namespace TomAndJerry.Tree
     {
         public Tree()
         {
-            this.Root = new Node(' ');
+            this.Root = new Node(' ', false);
         }
 
         public Node Root { get; set; }
@@ -17,11 +17,11 @@ namespace TomAndJerry.Tree
 
             foreach (var command in path.Commands)
             {
-                var found = currentNode.Children.FirstOrDefault(x => x.Value == command.Direction);
+                var found = currentNode.Children.FirstOrDefault(x => x.Direction == command.Direction);
 
                 if (found == null)
                 {
-                    var newNode = new Node(command.Direction);
+                    var newNode = new Node(command.Direction, command.IsPaint);
                     currentNode.Children.Add(newNode);
                     currentNode = newNode;
                 }

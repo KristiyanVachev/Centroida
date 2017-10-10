@@ -14,5 +14,7 @@
         public int Col { get; set; }
 
         public char Direction { get; set; }
+
+        public bool IsPaint { get; set; }
     }
 }
