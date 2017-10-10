@@ -26,16 +26,7 @@ namespace TomAndJerry
 
             var tomController = GatherPaths(3, 0, floor);
 
-            //Print
-            foreach (var path in tomController.Paths)
-            {
-                for (int index = 0; index < path.Commands.Count; index++)
-                {
-                    Console.Write(path.Commands[index].Direction);
-                }
-                Console.WriteLine();
-            }
-
+            tomController.Manual();
         }
 
         public static TomController GatherPaths(int tomRow, int tomCol, char[,] floor)
