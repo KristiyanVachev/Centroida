@@ -44,9 +44,9 @@
                 }
             }
 
-            if (newNode.Value == 6)
+            if (NeedsBalance(newNode))
             {
-                NeedsBalance(newNode);
+                this.Balance(newNode);
             }
         }
 
@@ -59,7 +59,6 @@
 
             if ((node.Parent.Left == null || node.Parent.Right == null) && (node.Parent.Parent.Left == null || node.Parent.Parent.Right == null))
             {
-                this.Balance(node);
                 return true;
             }
 
@@ -72,18 +71,15 @@
             {
                 LeftRotation(node.Parent);
             }
-
-            if (node.Parent.Right == null && node.Parent.Parent.Right == null)
+            else if (node.Parent.Right == null && node.Parent.Parent.Right == null)
             {
                 RightRotation(node.Parent);
             }
-
-            if (node.Parent.Left == null && node.Parent.Parent.Right == null) 
+            else if (node.Parent.Left == null && node.Parent.Parent.Right == null)
             {
                 LeftRightRotation(node);
             }
-
-            if (node.Parent.Right == null && node.Parent.Parent.Left == null)
+            else if (node.Parent.Right == null && node.Parent.Parent.Left == null)
             {
                 RightLeftRotation(node);
             }
@@ -148,13 +144,13 @@
         private void LeftRightRotation(Node node)
         {
             LeftRotation(node);
-            RightRotation(node);   
+            RightRotation(node);
         }
 
         private void RightLeftRotation(Node node)
         {
             RightRotation(node);
-            LeftRightRotation(node);
+            LeftRotation(node);
         }
     }
 }
