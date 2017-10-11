@@ -1,4 +1,6 @@
-﻿namespace AVLTree
+﻿using System;
+
+namespace AVLTree
 {
     public class AVL
     {
@@ -44,45 +46,71 @@
                 }
             }
 
-            if (NeedsBalance(newNode))
+            Balance(newNode);
+        }
+
+        private void Balance(Node newNode)
+        {
+            var currentNode = newNode.Parent;
+
+            while (currentNode != null)
             {
-                this.Balance(newNode);
+                int leftDepth = GetDepth(currentNode.Left);
+                int rightDepth = GetDepth(currentNode.Right);
+
+                if (Math.Abs(leftDepth - rightDepth) > 1)
+                {
+                    if (rightDepth > leftDepth)
+                    {
+                        //left or left-right
+                        if (GetDepth(currentNode.Right.Right) > GetDepth(currentNode.Right.Left))
+                        {
+                            LeftRotation(currentNode.Right);
+                        }
+                        else
+                        {
+                            LeftRightRotation(currentNode.Right.Right);
+                        }
+                    }
+                    else
+                    {
+                        if (GetDepth(currentNode.Left.Left) > GetDepth(currentNode.Left.Right))
+                        {
+                            RightRotation(currentNode.Left);   
+                        }
+                        else
+                        {
+                            RightLeftRotation(currentNode.Left.Left);
+                        }
+                    }
+                    return;
+                }
+
+                currentNode = currentNode.Parent;
             }
         }
 
-        private bool NeedsBalance(Node node)
+        private int GetDepth(Node node)
         {
-            if (node.Parent == null || node.Parent.Parent == null)
+            if (node == null)
             {
-                return false;
+                return 0;
             }
 
-            if ((node.Parent.Left == null || node.Parent.Right == null) && (node.Parent.Parent.Left == null || node.Parent.Parent.Right == null))
+            int leftDepth = 0;
+            int rightDepth = 0;
+
+            if (node.Left != null)
             {
-                return true;
+                leftDepth = GetDepth(node.Left);
             }
 
-            return false;
-        }
+            if (node.Right != null)
+            {
+                rightDepth = GetDepth(node.Right);
+            }
 
-        private void Balance(Node node)
-        {
-            if (node.Parent.Left == null && node.Parent.Parent.Left == null)
-            {
-                LeftRotation(node.Parent);
-            }
-            else if (node.Parent.Right == null && node.Parent.Parent.Right == null)
-            {
-                RightRotation(node.Parent);
-            }
-            else if (node.Parent.Left == null && node.Parent.Parent.Right == null)
-            {
-                LeftRightRotation(node);
-            }
-            else if (node.Parent.Right == null && node.Parent.Parent.Left == null)
-            {
-                RightLeftRotation(node);
-            }
+            return 1 + Math.Max(leftDepth, rightDepth);
         }
 
         private void LeftRotation(Node node)
@@ -106,11 +134,12 @@
                 this.Root = middle;
             }
 
+            top.Right = middle.Left;
+
             middle.Left = top;
             middle.Parent = top.Parent;
 
             top.Parent = middle;
-            top.Right = null;
         }
 
         private void RightRotation(Node node)
@@ -134,11 +163,12 @@
                 this.Root = middle;
             }
 
+            top.Left = middle.Right;
+
             middle.Right = top;
             middle.Parent = top.Parent;
 
             top.Parent = middle;
-            top.Left = null;
         }
 
         private void LeftRightRotation(Node node)
