@@ -49,6 +49,30 @@ namespace AVLTree
             Balance(newNode);
         }
 
+        public bool Find(int value)
+        {
+            var currentNode = this.Root;
+
+            while (currentNode != null)
+            {
+                if (currentNode.Value == value)
+                {
+                    return true;
+                }
+
+                if (value > currentNode.Value)
+                {
+                    currentNode = currentNode.Right;
+                }
+                else
+                {
+                    currentNode = currentNode.Left;
+                }
+            }
+
+            return false;
+        }
+
         private void Balance(Node newNode)
         {
             var currentNode = newNode.Parent;

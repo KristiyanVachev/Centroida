@@ -1,4 +1,6 @@
-﻿namespace AVLTree
+﻿using System;
+
+namespace AVLTree
 {
     public class Startup
     {
@@ -15,6 +17,8 @@
             tree.Add(7);
             tree.Add(8);
             tree.Add(9);
+
+            Console.WriteLine(tree.Find(12));
 
         }
     }
