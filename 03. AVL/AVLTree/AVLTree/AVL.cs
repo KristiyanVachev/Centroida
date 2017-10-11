@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-
-namespace AVLTree
+﻿namespace AVLTree
 {
     public class AVL
     {
@@ -46,7 +44,7 @@ namespace AVLTree
                 }
             }
 
-            if (newNode.Value == 8)
+            if (newNode.Value == 6)
             {
                 NeedsBalance(newNode);
             }
@@ -72,20 +70,40 @@ namespace AVLTree
         {
             if (node.Parent.Left == null && node.Parent.Parent.Left == null)
             {
-                LeftRotation(node);
+                LeftRotation(node.Parent);
             }
 
+            if (node.Parent.Right == null && node.Parent.Parent.Right == null)
+            {
+                RightRotation(node.Parent);
+            }
 
+            if (node.Parent.Left == null && node.Parent.Parent.Right == null) 
+            {
+                LeftRightRotation(node);
+            }
+
+            if (node.Parent.Right == null && node.Parent.Parent.Left == null)
+            {
+                RightLeftRotation(node);
+            }
         }
 
         private void LeftRotation(Node node)
         {
-            var middle = node.Parent;
-            var top = node.Parent.Parent;
+            var middle = node;
+            var top = node.Parent;
 
             if (top.Parent != null)
             {
-                top.Parent.Right = middle;
+                if (top.Parent.Right == top)
+                {
+                    top.Parent.Right = middle;
+                }
+                else
+                {
+                    top.Parent.Left = middle;
+                }
             }
             else
             {
@@ -94,7 +112,49 @@ namespace AVLTree
 
             middle.Left = top;
             middle.Parent = top.Parent;
+
             top.Parent = middle;
+            top.Right = null;
+        }
+
+        private void RightRotation(Node node)
+        {
+            var middle = node;
+            var top = node.Parent;
+
+            if (top.Parent != null)
+            {
+                if (top.Parent.Right == top)
+                {
+                    top.Parent.Right = middle;
+                }
+                else
+                {
+                    top.Parent.Left = middle;
+                }
+            }
+            else
+            {
+                this.Root = middle;
+            }
+
+            middle.Right = top;
+            middle.Parent = top.Parent;
+
+            top.Parent = middle;
+            top.Left = null;
+        }
+
+        private void LeftRightRotation(Node node)
+        {
+            LeftRotation(node);
+            RightRotation(node);   
+        }
+
+        private void RightLeftRotation(Node node)
+        {
+            RightRotation(node);
+            LeftRightRotation(node);
         }
     }
 }
