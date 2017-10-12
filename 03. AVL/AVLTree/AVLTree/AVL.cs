@@ -49,7 +49,117 @@ namespace AVLTree
             Balance(newNode);
         }
 
-        public bool Find(int value)
+        public bool Exists(int value)
+        {
+            return this.Find(value) != null;
+        }
+
+        public void Remove(int value)
+        {
+            var nodeToRemove = this.Find(value);
+
+            if (nodeToRemove == null)
+            {
+                return;
+            }
+
+            var nodeToRemoveParent = nodeToRemove.Parent;
+
+            //If nodeToRemove has no children, just delete it
+            if (nodeToRemove.Left == null && nodeToRemove.Right == null)
+            {
+                if (nodeToRemove.Parent.Left == nodeToRemove)
+                {
+                    nodeToRemove.Parent.Left = null;
+                }
+                else
+                {
+                    nodeToRemove.Parent.Right = null;
+                }
+            }
+            //IF nodeToRemove has only left child, place the child in its possition
+            else if (nodeToRemove.Right == null)
+            {
+                if (nodeToRemove.Parent.Left == nodeToRemove)
+                {
+                    nodeToRemove.Parent.Left = nodeToRemove.Left;
+                }
+                else
+                {
+                    nodeToRemove.Parent.Right = nodeToRemove.Left;
+                }
+            }
+            //If nodeToRemove has only right child, place the child in its possition
+            else if (nodeToRemove.Left == null)
+            {
+                if (nodeToRemove.Parent.Left == nodeToRemove)
+                {
+                    nodeToRemove.Parent.Left = nodeToRemove.Right;
+                }
+                else
+                {
+                    nodeToRemove.Parent.Right = nodeToRemove.Right;
+                }
+            }
+            else
+            {
+                //Find the smallest element after nodeToRemove
+                var smallestRightChild = nodeToRemove.Right;
+
+                while (smallestRightChild.Left != null)
+                {
+                    //leftMostParent = leftMost;
+                    smallestRightChild = smallestRightChild.Left;
+                }
+
+                //Set leftmost's parent to have the leftmost's child
+                if (smallestRightChild != nodeToRemove.Right)
+                {
+                    smallestRightChild.Parent.Left = smallestRightChild.Right;
+
+                    smallestRightChild.Right = nodeToRemove.Right;
+
+                    if (smallestRightChild.Right != null)
+                    {
+                        smallestRightChild.Right.Parent = smallestRightChild;
+                    }
+
+                    nodeToRemove.Right.Parent = smallestRightChild;
+                }
+
+                //Put in in the place of the node to be removed
+                smallestRightChild.Left = nodeToRemove.Left;
+
+                if (smallestRightChild.Left != null)
+                {
+                    smallestRightChild.Left.Parent = smallestRightChild;
+                }
+
+                nodeToRemove.Left.Parent = smallestRightChild;
+                smallestRightChild.Parent = nodeToRemove.Parent;
+
+                //Place leftMost in it's new parent's care
+                if (nodeToRemove.Parent == null)
+                {
+                    this.Root = smallestRightChild;
+                }
+                else
+                {
+                    if (nodeToRemove.Parent.Left == nodeToRemove)
+                    {
+                        nodeToRemove.Parent.Left = smallestRightChild;
+                    }
+                    else
+                    {
+                        nodeToRemove.Parent.Right = smallestRightChild;
+                    }
+                }
+            }
+
+            Balance(nodeToRemoveParent);
+        }
+
+        private Node Find(int value)
         {
             var currentNode = this.Root;
 
@@ -57,7 +167,7 @@ namespace AVLTree
             {
                 if (currentNode.Value == value)
                 {
-                    return true;
+                    return currentNode;
                 }
 
                 if (value > currentNode.Value)
@@ -70,12 +180,12 @@ namespace AVLTree
                 }
             }
 
-            return false;
+            return null;
         }
 
-        private void Balance(Node newNode)
+        private void Balance(Node node)
         {
-            var currentNode = newNode.Parent;
+            var currentNode = node;
 
             while (currentNode != null)
             {
@@ -87,7 +197,7 @@ namespace AVLTree
                     if (rightDepth > leftDepth)
                     {
                         //left or left-right
-                        if (GetDepth(currentNode.Right.Right) > GetDepth(currentNode.Right.Left))
+                        if (GetDepth(currentNode.Right.Right) >= GetDepth(currentNode.Right.Left))
                         {
                             LeftRotation(currentNode.Right);
                         }
@@ -98,9 +208,9 @@ namespace AVLTree
                     }
                     else
                     {
-                        if (GetDepth(currentNode.Left.Left) > GetDepth(currentNode.Left.Right))
+                        if (GetDepth(currentNode.Left.Left) >= GetDepth(currentNode.Left.Right))
                         {
-                            RightRotation(currentNode.Left);   
+                            RightRotation(currentNode.Left);
                         }
                         else
                         {
@@ -160,7 +270,13 @@ namespace AVLTree
 
             top.Right = middle.Left;
 
+            if (middle.Left != null)
+            {
+                middle.Left.Parent = top;
+            }
+
             middle.Left = top;
+
             middle.Parent = top.Parent;
 
             top.Parent = middle;
@@ -188,6 +304,11 @@ namespace AVLTree
             }
 
             top.Left = middle.Right;
+
+            if (middle.Right != null)
+            {
+                middle.Right.Parent = top;
+            }
 
             middle.Right = top;
             middle.Parent = top.Parent;

@@ -14,12 +14,11 @@ namespace AVLTree
             tree.Add(4);
             tree.Add(5);
             tree.Add(6);
-            tree.Add(7);
-            tree.Add(8);
-            tree.Add(9);
+            
+            Console.WriteLine(tree.Exists(12));
 
-            Console.WriteLine(tree.Find(12));
-
+            tree.Remove(6);
+            tree.Remove(5);
         }
     }
 }
