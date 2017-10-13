@@ -49,6 +49,11 @@ namespace AVLTree
             Balance(newNode);
         }
 
+        public void Print()
+        {
+            this.Root.PrintPretty("", false);
+        }
+
         public bool Exists(int value)
         {
             return this.Find(value) != null;
